@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amanda Cristina Dariz | Técnica em Agricultura & Futura Veterinária</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Orbitron, Share Tech Mono & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#06020d',
+                        darkCard: 'rgba(15, 5, 30, 0.75)',
+                        purpleNeon: '#9333ea',
+                        purpleGlow: '#7e22ce',
+                        purpleChaos: '#a855f7',
+                        purpleDark: '#2e0854',
+                        electricViolet: '#6d28d9',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Orbitron', 'sans-serif'],
+                        mono: ['Share Tech Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 18px rgba(147, 51, 234, 0.65), inset 0 0 10px rgba(168, 85, 247, 0.25)',
+                        'neon-lg': '0 0 35px rgba(147, 51, 234, 0.85), 0 0 15px rgba(192, 132, 252, 0.5)',
+                        'chaos': '0 0 25px rgba(126, 34, 206, 0.7)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #06020d;
+            color: #f3e8ff;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(126, 34, 206, 0.2) 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, rgba(109, 40, 217, 0.15) 0%, transparent 50%);
+        }
+
+        /* Efeito Scanlines (Tela instável / Energia) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.18) 0px,
+                rgba(0, 0, 0, 0.18) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        #energy-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Caótico (Energia Roxa) */
+        .energy-panel {
+            background: rgba(14, 4, 28, 0.72);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 15px rgba(126, 34, 206, 0.2);
+            position: relative;
+        }
+
+        /* Cantos cortados estilo ritualístico/tecnológico */
+        .cyber-cut {
+            clip-path: polygon(
+                0 12px, 12px 0, 
+                calc(100% - 12px) 0, 100% 12px, 
+                100% calc(100% - 12px), calc(100% - 12px) 100%, 
+                12px 100%, 0 calc(100% - 12px)
+            );
+        }
+
+        .energy-panel-hover {
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .energy-panel-hover:hover {
+            border-color: #c084fc;
+            box-shadow: 0 0 28px rgba(147, 51, 234, 0.65), inset 0 0 15px rgba(168, 85, 247, 0.3);
+            transform: translateY(-4px) scale(1.01);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #06020d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6b21a8;
+            border-radius: 0px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a855f7;
+        }
+
+        /* Neon Text Glow Puramente Roxo */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.9), 0 0 25px rgba(126, 34, 206, 0.7), 0 0 40px rgba(109, 40, 217, 0.5);
+        }
+
+        /* Efeito Glitch no Título em Roxo/Violeta */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #c084fc;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 3.5s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #7c3aed;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 2.8s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(15px, 9999px, 44px, 0); transform: skew(0.3deg); }
+            5% { clip: rect(72px, 9999px, 89px, 0); transform: skew(-0.5deg); }
+            10% { clip: rect(0, 0, 0, 0); transform: skew(0deg); }
+            100% { clip: rect(0, 0, 0, 0); }
+        }
+
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); transform: skew(-0.4deg); }
+            4% { clip: rect(12px, 9999px, 35px, 0); transform: skew(0.6deg); }
+            8% { clip: rect(0, 0, 0, 0); transform: skew(0deg); }
+            100% { clip: rect(0, 0, 0, 0); }
+        }
+
+        /* Typing Cursor Effect */
+        .typing-cursor::after {
+            content: '█';
+            color: #c084fc;
+            margin-left: 4px;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Animação lenta para o Símbolo de Energia */
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: spin-slow 45s linear infinite;
+        }
+
+        /* Pulso elétrico nas barras */
+        @keyframes pulse-bar {
+            0%, 100% { opacity: 1; filter: brightness(1); }
+            50% { opacity: 0.75; filter: brightness(1.35); }
+        }
+        .energy-bar {
+            animation: pulse-bar 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-purple-600 selection:text-white">
+
+    <!-- Canvas de Raios e Partículas de Energia -->
+    <canvas id="energy-canvas"></canvas>
+
+    <!-- Símbolo de Energia Sutil ao Fundo (Watermark Paranormal) -->
+    <div class="fixed inset-0 flex items-center justify-center pointer-events-none z-0 opacity-[0.08]">
+        <svg class="w-[650px] h-[650px] text-purple-500 animate-spin-slow" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="100" cy="100" r="90" stroke-dasharray="6 4"/>
+            <circle cx="100" cy="100" r="72"/>
+            <polygon points="100,12 176,144 24,144" />
+            <polygon points="100,188 176,56 24,56" />
+            <polygon points="100,32 158,100 100,168 42,100" stroke-width="1"/>
+            <circle cx="100" cy="100" r="22" stroke-dasharray="2 3"/>
+        </svg>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 w-full z-50 energy-panel border-b border-purple-500/40">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#home" class="text-xl sm:text-2xl font-black font-heading tracking-widest text-white flex items-center gap-3 group">
+                <span class="relative flex h-4 w-4">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-4 w-4 bg-purple-600 shadow-neon"></span>
+                </span>
+                <span class="bg-gradient-to-r from-purple-300 via-violet-300 to-white bg-clip-text text-transparent group-hover:glow-text transition-all">
+                    AMANDA<span class="text-purple-400">.</span>DARIZ
+                </span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-mono tracking-wider uppercase">
+                <a href="#home" class="hover:text-purple-300 hover:glow-text transition-all duration-200">// Home</a>
+                <a href="#sobre" class="hover:text-purple-300 hover:glow-text transition-all duration-200">// Sobre Mim</a>
+                <a href="#projetos" class="hover:text-purple-300 hover:glow-text transition-all duration-200">// Projetos</a>
+                <a href="#habilidades" class="hover:text-purple-300 hover:glow-text transition-all duration-200">// Competências</a>
+                <a href="#contato" class="hover:text-purple-300 hover:glow-text transition-all duration-200">// Contato</a>
+            </nav>
+
+            <a href="#contato" class="hidden sm:inline-flex px-5 py-2 cyber-cut border border-purple-400/60 bg-purple-950/70 hover:bg-purple-700 hover:border-purple-300 text-xs font-mono uppercase tracking-widest transition-all duration-300 shadow-neon text-purple-100">
+                <i class="fa-solid fa-bolt mr-2 text-purple-300"></i> Conectar
+            </a>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button id="menu-btn" class="md:hidden text-2xl text-purple-400 focus:outline-none">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden energy-panel border-t border-purple-500/40 px-6 py-6 flex flex-col gap-4 text-center font-mono uppercase tracking-widest">
+            <a href="#home" class="mobile-link text-base hover:text-purple-300 py-1">// Home</a>
+            <a href="#sobre" class="mobile-link text-base hover:text-purple-300 py-1">// Sobre</a>
+            <a href="#projetos" class="mobile-link text-base hover:text-purple-300 py-1">// Projetos</a>
+            <a href="#habilidades" class="mobile-link text-base hover:text-purple-300 py-1">// Habilidades</a>
+            <a href="#contato" class="mobile-link text-base hover:text-purple-300 py-1">// Contato</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10">
+
+        <!-- HERO SECTION -->
+        <section id="home" class="min-h-screen flex items-center justify-center pt-24 pb-16 px-6">
+            <div class="max-w-4xl mx-auto text-center space-y-8">
+                
+                <div class="inline-flex items-center gap-3 px-4 py-2 cyber-cut energy-panel border-purple-400/50 text-purple-300 text-xs font-mono tracking-widest uppercase shadow-neon">
+                    <i class="fa-solid fa-bolt text-purple-400 animate-pulse"></i>
+                    <span>Técnica em Agricultura & Futura Veterinária</span>
+                </div>
+
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-black font-heading tracking-wider leading-tight uppercase">
+                    <span class="text-purple-200 text-2xl sm:text-3xl block mb-2 font-mono tracking-widest opacity-80">&gt; Olá, eu sou</span>
+                    <span class="glitch bg-gradient-to-r from-purple-400 via-violet-300 to-purple-200 bg-clip-text text-transparent glow-text" data-text="Amanda Cristina Dariz">
+                        Amanda Cristina Dariz
+                    </span>
+                </h1>
+
+                <div class="text-lg sm:text-2xl text-purple-200 font-mono max-w-2xl mx-auto h-12 flex justify-center items-center bg-purple-950/40 border-y border-purple-500/40 px-4">
+                    <span class="text-purple-400 mr-2">&gt;_</span>
+                    <span id="typing-text" class="typing-cursor text-purple-300 font-semibold tracking-wide"></span>
+                </div>
+
+                <p class="text-purple-200/80 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                    Unindo a ciência da agricultura, a inovação no campo e a paixão incondicional pelo cuidado e bem-estar dos animais.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-5 pt-4">
+                    <a href="#projetos" class="w-full sm:w-auto px-8 py-4 cyber-cut bg-gradient-to-r from-purple-800 via-purple-600 to-violet-800 hover:from-purple-700 hover:to-violet-700 font-heading text-xs sm:text-sm tracking-widest uppercase font-bold text-white shadow-neon-lg transition-all duration-300 transform hover:-translate-y-1 border border-purple-400/60">
+                        Explorar Projetos <i class="fa-solid fa-bolt ml-2 text-purple-200"></i>
+                    </a>
+                    <a href="#contato" class="w-full sm:w-auto px-8 py-4 cyber-cut energy-panel hover:bg-purple-900/50 font-mono text-sm uppercase tracking-widest text-purple-200 border border-purple-500/50 transition-all duration-300">
+                        Iniciar Transmissão
+                    </a>
+                </div>
+
+                <!-- Redes Sociais Hero -->
+                <div class="flex justify-center gap-6 pt-8 text-xl text-purple-300">
+                    <a href="#" class="w-11 h-11 cyber-cut energy-panel flex items-center justify-center hover:text-purple-200 hover:border-purple-400 hover:shadow-neon transition-all transform hover:scale-110" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                    <a href="#" class="w-11 h-11 cyber-cut energy-panel flex items-center justify-center hover:text-purple-200 hover:border-purple-400 hover:shadow-neon transition-all transform hover:scale-110" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-11 h-11 cyber-cut energy-panel flex items-center justify-center hover:text-purple-200 hover:border-purple-400 hover:shadow-neon transition-all transform hover:scale-110" title="E-mail"><i class="fa-solid fa-envelope"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOBRE MIM SECTION -->
+        <section id="sobre" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                
+                <!-- Card com Avatar Neon / Energia -->
+                <div class="w-full md:w-1/2 flex justify-center">
+                    <div class="relative w-72 h-72 sm:w-80 sm:h-80">
+                        <!-- Aura de Energia pulsante -->
+                        <div class="absolute -inset-2 cyber-cut bg-gradient-to-tr from-purple-700 via-violet-600 to-purple-950 blur-xl opacity-80 animate-pulse"></div>
+                        <div class="relative w-full h-full energy-panel cyber-cut p-6 flex flex-col items-center justify-center border-purple-400/60 text-center overflow-hidden">
+                            <!-- Linhas de circuito decorativas -->
+                            <div class="absolute top-3 left-3 text-[10px] font-mono text-purple-400/80">SYS.01 // AGRO-VET</div>
+                            <div class="absolute bottom-3 right-3 text-[10px] font-mono text-purple-400/80">STATUS: ATIVO</div>
+                            
+                            <div class="relative w-32 h-32 rounded-full bg-purple-950/95 border-2 border-purple-400 flex items-center justify-center text-5xl text-purple-300 shadow-neon mb-4">
+                                <div class="absolute inset-0 rounded-full border border-purple-400 animate-ping opacity-25"></div>
+                                <i class="fa-solid fa-user-doctor"></i>
+                            </div>
+                            <h3 class="text-xl font-bold font-heading tracking-wider text-white">Amanda C. Dariz</h3>
+                            <p class="text-xs font-mono uppercase tracking-widest text-purple-400 mt-1">Técnica em Agricultura</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo Sobre -->
+                <div class="w-full md:w-1/2 space-y-6">
+                    <div class="inline-block px-3 py-1 cyber-cut energy-panel text-xs font-mono tracking-widest text-purple-300 border-purple-400/40">
+                        [ REGISTRO // MINHA TRAJETÓRIA ]
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white leading-tight">
+                        Do solo à saúde animal: <span class="text-purple-400 glow-text">dedicação ao campo</span>
+                    </h2>
+                    <p class="text-purple-100/90 leading-relaxed">
+                        Sou <strong class="text-purple-300">Amanda Cristina Dariz</strong>, formada como Técnica em Agricultura e apaixonada pela agropecuária. Minha base técnica me proporcionou uma compreensão profunda do manejo de solos, nutrição de pastagens, produção sustentável e biotecnologia agrícola.
+                    </p>
+                    <p class="text-purple-200/75 leading-relaxed text-sm">
+                        Com o olhar voltado para o futuro, estou me preparando para ingressar na <strong class="text-purple-300">Medicina Veterinária</strong>. Meu objetivo é unir o conhecimento prático da agricultura à medicina preventiva e de precisão, promovendo o bem-estar dos animais e o desenvolvimento rural sustentável.
+                    </p>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4">
+                        <div class="energy-panel cyber-cut p-4 text-center border-purple-500/40 hover:border-purple-300 transition-colors">
+                            <h4 class="text-2xl font-black text-purple-400"><i class="fa-solid fa-wheat-awn"></i></h4>
+                            <p class="text-xs text-white font-heading font-bold mt-2">Técnica em Agronomia</p>
+                            <p class="text-[11px] font-mono text-purple-300/70 mt-1">Manejo & Campo</p>
+                        </div>
+                        <div class="energy-panel cyber-cut p-4 text-center border-purple-500/40 hover:border-purple-300 transition-colors">
+                            <h4 class="text-2xl font-black text-purple-400"><i class="fa-solid fa-stethoscope"></i></h4>
+                            <p class="text-xs text-white font-heading font-bold mt-2">Futura Vet</p>
+                            <p class="text-[11px] font-mono text-purple-300/70 mt-1">Grandes Animais</p>
+                        </div>
+                        <div class="energy-panel cyber-cut p-4 text-center border-purple-500/40 hover:border-purple-300 transition-colors col-span-2 sm:col-span-1">
+                            <h4 class="text-2xl font-black text-purple-400"><i class="fa-solid fa-leaf"></i></h4>
+                            <p class="text-xs text-white font-heading font-bold mt-2">Sustentabilidade</p>
+                            <p class="text-[11px] font-mono text-purple-300/70 mt-1">Práticas Ecológicas</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PROJETOS SECTION -->
+        <section id="projetos" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto space-y-4 mb-16">
+                <div class="inline-block px-3 py-1 cyber-cut energy-panel text-xs font-mono tracking-widest text-purple-300 border-purple-400/40">
+                    [ ARQUIVOS // CAMPOS DE ATUAÇÃO ]
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white uppercase tracking-wide">
+                    Estudos & <span class="text-purple-400 glow-text">Projetos no Agro</span>
+                </h2>
+                <p class="text-purple-200/75 text-sm">
+                    Conheça algumas das áreas e projetos voltados ao manejo agrícola, pecuária de precisão e bem-estar animal.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Card Projeto 1 -->
+                <div class="energy-panel energy-panel-hover cyber-cut overflow-hidden group">
+                    <div class="relative h-48 overflow-hidden bg-purple-950">
+                        <img src="https://placehold.co/600x400/140529/a855f7?text=Manejo+Bovino+e+Saude" alt="Monitoramento Animal" class="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 mix-blend-luminosity group-hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#06020d] via-purple-950/30 to-transparent"></div>
+                        <span class="absolute top-3 right-3 px-2 py-0.5 bg-purple-950/90 border border-purple-400/50 text-[10px] font-mono text-purple-300">PRJ // 01</span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex gap-2 font-mono">
+                            <span class="text-[10px] font-bold px-2 py-1 bg-purple-900/70 text-purple-200 border border-purple-500/50">PECUÁRIA</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-purple-900/70 text-purple-200 border border-purple-500/50">SAÚDE ANIMAL</span>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white group-hover:text-purple-300 transition-colors">Monitoramento Sanitário Bovino</h3>
+                        <p class="text-purple-200/75 text-xs leading-relaxed">
+                            Estudo e acompanhamento preventivo da saúde do rebanho, calendário vacinal e identificação precoce de zoonoses e patologias.
+                        </p>
+                        <div class="flex justify-between items-center pt-2 border-t border-purple-500/20">
+                            <span class="text-xs font-mono text-purple-400 flex items-center gap-2">
+                                <i class="fa-solid fa-cow"></i> Pesquisa & Manejo
+                            </span>
+                            <i class="fa-solid fa-bolt text-purple-500 group-hover:text-purple-300 transition-colors"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Projeto 2 -->
+                <div class="energy-panel energy-panel-hover cyber-cut overflow-hidden group">
+                    <div class="relative h-48 overflow-hidden bg-purple-950">
+                        <img src="https://placehold.co/600x400/1a0736/c084fc?text=Nutricao+e+Pastagem" alt="Nutrição Pastoril" class="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 mix-blend-luminosity group-hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#06020d] via-purple-950/30 to-transparent"></div>
+                        <span class="absolute top-3 right-3 px-2 py-0.5 bg-purple-950/90 border border-purple-400/50 text-[10px] font-mono text-purple-300">PRJ // 02</span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex gap-2 font-mono">
+                            <span class="text-[10px] font-bold px-2 py-1 bg-purple-900/70 text-purple-200 border border-purple-500/50">AGRONOMIA</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-purple-900/70 text-purple-200 border border-purple-500/50">PASTAGEM</span>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white group-hover:text-purple-300 transition-colors">Planejamento Forrageiro & Solos</h3>
+                        <p class="text-purple-200/75 text-xs leading-relaxed">
+                            Análise de fertilidade do solo, rotatividade de pastos e suplementação nutricional otimizada para pecuária de alto rendimento.
+                        </p>
+                        <div class="flex justify-between items-center pt-2 border-t border-purple-500/20">
+                            <span class="text-xs font-mono text-purple-400 flex items-center gap-2">
+                                <i class="fa-solid fa-seedling"></i> Análise Agrícola
+                            </span>
+                            <i class="fa-solid fa-bolt text-purple-500 group-hover:text-purple-300 transition-colors"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Projeto 3 -->
+                <div class="energy-panel energy-panel-hover cyber-cut overflow-hidden group">
+                    <div class="relative h-48 overflow-hidden bg-purple-950">
+                        <img src="https://placehold.co/600x400/0f0421/9333ea?text=Biologico+e+Controle" alt="Controle Fitossanitário" class="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 mix-blend-luminosity group-hover:mix-blend-normal">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#06020d] via-purple-950/30 to-transparent"></div>
+                        <span class="absolute top-3 right-3 px-2 py-0.5 bg-purple-950/90 border border-purple-400/50 text-[10px] font-mono text-purple-300">PRJ // 03</span>
+                    </div>
+                    <div class="p-6 space-y-4">
+                        <div class="flex gap-2 font-mono">
+                            <span class="text-[10px] font-bold px-2 py-1 bg-purple-900/70 text-purple-200 border border-purple-500/50">SUSTENTABILIDADE</span>
+                            <span class="text-[10px] font-bold px-2 py-1 bg-purple-900/70 text-purple-200 border border-purple-500/50">FITOSSANIDADE</span>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-white group-hover:text-purple-300 transition-colors">Controle Fitossanitário Integrado</h3>
+                        <p class="text-purple-200/75 text-xs leading-relaxed">
+                            Aplicação de práticas ecológicas para manejo de pragas e doenças em lavouras, reduzindo impactos ambientais.
+                        </p>
+                        <div class="flex justify-between items-center pt-2 border-t border-purple-500/20">
+                            <span class="text-xs font-mono text-purple-400 flex items-center gap-2">
+                                <i class="fa-solid fa-plant-wilt"></i> Proteção de Lavouras
+                            </span>
+                            <i class="fa-solid fa-bolt text-purple-500 group-hover:text-purple-300 transition-colors"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- HABILIDADES (SKILLS) SECTION -->
+        <section id="habilidades" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="text-center max-w-2xl mx-auto space-y-4 mb-16">
+                <div class="inline-block px-3 py-1 cyber-cut energy-panel text-xs font-mono tracking-widest text-purple-300 border-purple-400/40">
+                    [ MATRIZ // ESPECIALIDADES ]
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold font-heading text-white uppercase tracking-wide">
+                    Minhas <span class="text-purple-400 glow-text">Habilidades Técnicas</span>
+                </h2>
+                <p class="text-purple-200/75 text-sm">
+                    Competências desenvolvidas no curso técnico em agricultura e práticas voltadas ao campo.
+                </p>
+            </div>
+
+            <!-- Grid de Habilidades Agro / Vet Puramente em Tons de Roxo -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+                
+                <!-- Skill Card 1 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-cow text-4xl text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Manejo Animal</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 95%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">95% CARGA</span>
+                </div>
+
+                <!-- Skill Card 2 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-wheat-awn text-4xl text-purple-300 drop-shadow-[0_0_8px_rgba(192,132,252,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Culturas Agrícolas</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 90%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">90% CARGA</span>
+                </div>
+
+                <!-- Skill Card 3 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-vial-circle-check text-4xl text-violet-400 drop-shadow-[0_0_8px_rgba(167,139,250,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Análise de Solos</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 88%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">88% CARGA</span>
+                </div>
+
+                <!-- Skill Card 4 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-heart-pulse text-4xl text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Bem-Estar Animal</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 95%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">95% CARGA</span>
+                </div>
+
+                <!-- Skill Card 5 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-shield-virus text-4xl text-violet-300 drop-shadow-[0_0_8px_rgba(196,181,253,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Fitossanidade</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 82%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">82% CARGA</span>
+                </div>
+
+                <!-- Skill Card 6 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-apple-whole text-4xl text-purple-300 drop-shadow-[0_0_8px_rgba(216,180,254,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Nutrição de Pastagens</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 85%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">85% CARGA</span>
+                </div>
+
+                <!-- Skill Card 7 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-tractor text-4xl text-violet-400 drop-shadow-[0_0_8px_rgba(139,92,246,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Gestão Rural</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 80%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">80% CARGA</span>
+                </div>
+
+                <!-- Skill Card 8 -->
+                <div class="energy-panel cyber-cut p-6 flex flex-col items-center justify-center text-center space-y-3 energy-panel-hover">
+                    <i class="fa-solid fa-microscope text-4xl text-purple-400 drop-shadow-[0_0_8px_rgba(168,85,247,0.85)]"></i>
+                    <h4 class="font-heading font-bold text-white text-xs sm:text-sm tracking-wide">Iniciação Veterinária</h4>
+                    <div class="w-full bg-purple-950/90 h-2 overflow-hidden border border-purple-500/40 p-[1px]">
+                        <div class="bg-gradient-to-r from-purple-700 to-purple-400 h-full energy-bar" style="width: 90%"></div>
+                    </div>
+                    <span class="text-[10px] font-mono text-purple-300">90% CARGA</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- CONTATO SECTION -->
+        <section id="contato" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <div class="space-y-6">
+                    <div class="inline-block px-3 py-1 cyber-cut energy-panel text-xs font-mono tracking-widest text-purple-300 border-purple-400/40">
+                        [ CANAL DE COMUNICAÇÃO ]
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-extrabold font-heading text-white leading-tight">
+                        Vamos conversar sobre o <span class="text-purple-400 glow-text">futuro do Agro?</span>
+                    </h2>
+                    <p class="text-purple-200/80 leading-relaxed text-sm sm:text-base">
+                        Seja para trocar ideias sobre agricultura sustentável, manejo animal ou projetos no campo, estou sempre à disposição!
+                    </p>
+
+                    <div class="space-y-4 pt-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 cyber-cut energy-panel border-purple-400/50 flex items-center justify-center text-purple-300 text-xl shadow-neon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono uppercase text-purple-400">Frequência / Email</h5>
+                                <p class="text-sm font-semibold text-white">originationszd@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 cyber-cut energy-panel border-purple-400/50 flex items-center justify-center text-purple-300 text-xl shadow-neon">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h5 class="text-xs font-mono uppercase text-purple-400">Coordenadas / Atuação</h5>
+                                <p class="text-sm font-semibold text-white">Brasil,Paraná — Agricultura & Veterinária</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulário -->
+                <div class="energy-panel cyber-cut p-8 border border-purple-400/40 shadow-neon">
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-mono tracking-widest text-purple-300 mb-2">&gt; SEU NOME</label>
+                            <input type="text" required placeholder="Digite seu nome..." class="w-full bg-[#090314] border border-purple-700/60 px-4 py-3 text-white placeholder-purple-400/40 font-mono text-sm focus:outline-none focus:border-purple-400 focus:shadow-neon transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono tracking-widest text-purple-300 mb-2">&gt; SEU EMAIL</label>
+                            <input type="email" required placeholder="seuemail@exemplo.com" class="w-full bg-[#090314] border border-purple-700/60 px-4 py-3 text-white placeholder-purple-400/40 font-mono text-sm focus:outline-none focus:border-purple-400 focus:shadow-neon transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono tracking-widest text-purple-300 mb-2">&gt; SUA MENSAGEM</label>
+                            <textarea rows="4" required placeholder="Como posso ajudar em seu projeto agrícola ou animal?" class="w-full bg-[#090314] border border-purple-700/60 px-4 py-3 text-white placeholder-purple-400/40 font-mono text-sm focus:outline-none focus:border-purple-400 focus:shadow-neon transition resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 cyber-cut bg-gradient-to-r from-purple-800 via-purple-600 to-purple-900 hover:from-purple-700 hover:to-purple-600 font-heading tracking-widest uppercase text-xs sm:text-sm font-bold text-white shadow-neon-lg transition duration-300 border border-purple-400/50">
+                            Transmitir Mensagem <i class="fa-solid fa-bolt ml-2 text-purple-200"></i>
+                        </button>
+                    </form>
+
+                    <!-- Caixa de Feedback customizada -->
+                    <div id="form-message" class="hidden mt-4 p-4 cyber-cut bg-purple-950/90 border border-purple-400 text-purple-200 text-center text-xs font-mono tracking-wider uppercase shadow-neon">
+                        ⚡ Sinal transmitido com sucesso! Entrarei em contato em breve.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="energy-panel border-t border-purple-500/30 py-8 px-6 text-center text-xs font-mono text-purple-300/60">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 AMANDA CRISTINA DARIZ // TÉCNICA EM AGRICULTURA & FUTURA VETERINÁRIA.</p>
+            <p class="flex items-center gap-2 text-purple-400/80">
+                <span>ENERGIA & CAOS</span>
+                <i class="fa-solid fa-bolt animate-pulse"></i>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT: Typing, Mobile Menu e Canvas de Raios/Partículas Puramente Roxas -->
+    <script>
+        // 1. Mobile Menu Toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // 2. Typing Effect
+        const typingText = document.getElementById('typing-text');
+        const phrases = [
+            'Técnica em Agricultura',
+            'Futura Médica Veterinária',
+            'Especialista em Manejo & Produção',
+            'Apaixonada pelo Bem-Estar Animal'
+        ];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function typeEffect() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                typingText.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingText.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 35 : 70;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 400;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+
+        typeEffect();
+
+        // 3. Form Submit Feedback
+        const contactForm = document.getElementById('contact-form');
+        const formMessage = document.getElementById('form-message');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            formMessage.classList.remove('hidden');
+            contactForm.reset();
+            setTimeout(() => {
+                formMessage.classList.add('hidden');
+            }, 5000);
+        });
+
+        // 4. Canvas de Energia (Faíscas e Raios Puramente em Tons de Roxo)
+        const canvas = document.getElementById('energy-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const mouse = { x: null, y: null };
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+            for (let i = 0; i < 2; i++) {
+                sparks.push(new Spark(mouse.x, mouse.y, true));
+            }
+        });
+
+        // Paleta estritamente roxa / violeta / lilás (sem rosa/vermelho)
+        const purplePalette = ['#9333ea', '#7e22ce', '#a855f7', '#6d28d9', '#c084fc'];
+
+        class Spark {
+            constructor(x, y, fromMouse = false) {
+                this.x = x || Math.random() * width;
+                this.y = y || Math.random() * height;
+                this.size = Math.random() * 2.5 + 0.8;
+                this.speedX = (Math.random() - 0.5) * (fromMouse ? 4 : 1.8);
+                this.speedY = (Math.random() - 0.5) * (fromMouse ? 4 : 1.8) - 0.3;
+                this.color = purplePalette[Math.floor(Math.random() * purplePalette.length)];
+                this.life = fromMouse ? 40 : Math.random() * 150 + 80;
+                this.maxLife = this.life;
+            }
+
+            update() {
+                this.x += this.speedX + (Math.random() - 0.5) * 1.2;
+                this.y += this.speedY + (Math.random() - 0.5) * 1.2;
+                this.life--;
+
+                if (this.life <= 0) {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.life = Math.random() * 150 + 80;
+                    this.maxLife = this.life;
+                }
+            }
+
+            draw() {
+                const opacity = Math.min(1, this.life / (this.maxLife * 0.4));
+                ctx.save();
+                ctx.globalAlpha = opacity;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 14;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function drawLightning() {
+            if (Math.random() > 0.975) {
+                let startX = Math.random() * width;
+                let startY = Math.random() * (height * 0.5);
+                let segments = Math.floor(Math.random() * 8) + 5;
+
+                ctx.save();
+                ctx.strokeStyle = Math.random() > 0.5 ? '#c084fc' : '#9333ea';
+                ctx.lineWidth = Math.random() * 1.8 + 0.5;
+                ctx.shadowBlur = 22;
+                ctx.shadowColor = '#7e22ce';
+                ctx.globalAlpha = Math.random() * 0.55 + 0.25;
+
+                ctx.beginPath();
+                ctx.moveTo(startX, startY);
+
+                for (let i = 0; i < segments; i++) {
+                    startX += (Math.random() - 0.5) * 90;
+                    startY += Math.random() * 60 + 15;
+                    ctx.lineTo(startX, startY);
+                }
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        const sparks = [];
+        for (let i = 0; i < 65; i++) {
+            sparks.push(new Spark());
+        }
+
+        function animateEnergy() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < sparks.length; i++) {
+                sparks[i].update();
+                sparks[i].draw();
+
+                for (let j = i + 1; j < sparks.length; j++) {
+                    const dx = sparks[i].x - sparks[j].x;
+                    const dy = sparks[i].y - sparks[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 110) {
+                        ctx.save();
+                        ctx.strokeStyle = 'rgba(147, 51, 234, ' + (1 - dist / 110) * 0.3 + ')';
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(sparks[i].x, sparks[i].y);
+                        ctx.lineTo(sparks[j].x, sparks[j].y);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
+                }
+            }
+
+            if (sparks.length > 110) {
+                sparks.splice(65, sparks.length - 110);
+            }
+
+            drawLightning();
+            requestAnimationFrame(animateEnergy);
+        }
+
+        animateEnergy();
+    </script>
+</body>
+</html>
